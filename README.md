@@ -1,4 +1,7 @@
-#Fr0gNet
+# Fr0gNet
+
+![fr0gNet-animated-logo](https://github.com/user-attachments/assets/8c86148f-f49a-4551-b673-fa8406b898b0)
+
 Fr0gNet is a decentralized web file system for uncensorable ID-addressed websites and content.
 Built on Stellar, Fr0g turns the network into a global, censorship-resistant data layer where content can’t be silently altered, taken down, or forgotten.
 ### fr0g IDs
@@ -22,7 +25,16 @@ Stellar is used as the underlying consensus, transaction, and data-availability 
 ┌─────────────────────────────────────────────┐
 │ fr0g Application Layer │
 │ • fr0g ID resolution │
-│ • Content addressing & metadata │
+│ • Content addressing & metadata │![grok-image-e650ab40-9284-465a-9ec2-711d27b3eda6(3)](https://github.com/user-attachments/assets/72153e2e-90d4-4bfa-bdc7-d93913acf5c8)
+
+
+https://github.com/user-attachments/assets/25eb8ac3-0410-40f6-8c31-1b28cc527281
+
+
+
+https://github.com/user-attachments/assets/9784d809-d04c-4cc5-b8ed-fe72e31cc8ac
+
+
 │ • App & file primitives │
 │ • Client-agnostic protocol rules │
 └─────────────────────────────────────────────┘
