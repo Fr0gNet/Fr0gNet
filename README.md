@@ -33,8 +33,9 @@ The core of fr0g is written in Python as a one pure-python file: fr0g.py
 In the following example we create a new fr0g ID and bind some HTML code to it using Python
 
 ```bash
-git clone https://github.com/Fr0gNet/Fr0gNet/core
-cd core
+$ git clone https://github.com/Fr0gNet/Fr0gNet
+$ cd Fr0gNet/core
+$ python3
 ```
 
 ```python
