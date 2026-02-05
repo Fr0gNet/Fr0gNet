@@ -8,11 +8,10 @@ join us on Discord: *[DISCORD](https://discord.gg/6BFfmkdqQ9)*
 
 ### Fr0g
 
-Fr0g is an application/layer protocol build on Stellar that enables a decentralized web file system for uncensorable ID-addressed websites and content:
+Fr0g is an application/layer protocol build on Stellar that enables a decentralized web file system for uncensorable ID-addressed websites and content
 
-the **Fr0gNet**
+Fr0g turns the network into a global, censorship-resistant data layer where content can’t be silently altered, taken down, or forgotten: the **Fr0gNet**
 
-Fr0g turns the network into a global, censorship-resistant data layer where content can’t be silently altered, taken down, or forgotten.
 
 ### fr0g IDs
 A *fr0g ID* act like a "domain" that links directly to on-chain files and content.
