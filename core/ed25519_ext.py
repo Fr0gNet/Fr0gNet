@@ -1,10 +1,10 @@
 import hashlib
 
-# Ed25519 constants
+
 b = 256
 q = 2**255 - 19
 l = 2**252 + 27742317777372353535851937790883648493
-d = -121665 * pow(121666, q-2, q) % q  # inv(121666) == pow(121666, q-2, q)
+d = -121665 * pow(121666, q-2, q) % q
 I = pow(2, (q-1)//4, q)
 
 def H(m):
@@ -57,7 +57,7 @@ def scalarmult(P, e):
         Q = edwards_add(Q, P)
     return Q
 
-# Precompute powers of B for efficiency
+
 Bpow = []
 def make_Bpow():
     P = B
