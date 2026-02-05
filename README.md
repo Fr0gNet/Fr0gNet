@@ -1,10 +1,5 @@
 # Fr0gNet
 
-The project is continuously evolving;
-
-To stay up to date and have questions or feedback about Fr0gNet
-
-join us on Discord: *[DISCORD](https://discord.gg/6BFfmkdqQ9)*
 
 ### Fr0g
 
