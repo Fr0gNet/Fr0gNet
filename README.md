@@ -1,93 +1,118 @@
 # Fr0gNet
 
-**[Fr0gNet Browser](https://fr0gnet.github.io/Fr0gNet/frontend/browser)**
 
-### Fr0g
+### Fr0g v0.1.0
 
 Fr0g is an application/layer protocol build on Stellar that enables a decentralized web file system for uncensorable ID-addressed websites and content
-
-Fr0g turns the network into a global, censorship-resistant data layer where content can’t be silently altered, taken down, or forgotten: the **Fr0gNet**
+and turns the network into a global, censorship-resistant data layer where content can’t be altered or taken down by third parties.
 
 
 ### fr0g IDs
-A *fr0g ID* act like a "domain" that links directly to on-chain files and content.
+Think of a fr0g ID as a "decentralized domain":
+- Anyone with the ID can view the content (no login or special client required).
+- Only the holder of the corresponding secret key can modify or delete it.
+- Everything is on-chain → public, verifiable, censorship-resistant and impossible for third parties to remove.
 IDs are deterministic, globally resolvable, and independent of any specific client implementation.
 
-You get a random keypair (fr0g ID + secret) ; if you bind some content and share its corresponding fr0g ID, anyone can view it on a browser. *Content you bind (like HTML code) can be globally browsed by anyone have the fr0g ID (also if he haven't fr0g installed*) .
-With your secret,if you want, you can edit or remove the content, maintaining the same fr0g ID.
+### How to create one (step-by-step)
 
-*An example of fr0g ID*
-**fr0gdvkapv7ko5cl65qgpekkewgo2n2vl3j7ldf2x5xtgkbkucohsvgvszcg** 
+1. Clone the repository (it contains the core in pure Python):
 
-It is possible to bind multiple files to a single ID, every file will have an index (#1,#2).
-
-The content at the index 0 act as default content of the ID (like an index.html) ; by default the content will be uploaded at 0.
-
-To bind content to a different index you must specify esplicitically.
-
-### Getting Started and examples for developers:
-
-The core of fr0g is written in Python as a one pure-python file: fr0g.py
-
-## EXAMPLE: Upload things
-
-In the following example we create a new fr0g ID and bind some HTML code to it using Python
-
-```bash
-$ git clone https://github.com/Fr0gNet/Fr0gNet
-$ cd Fr0gNet/core
-$ python3
 ```
+git clone https://github.com/Fr0gNet/Fr0gNet
+cd Fr0gNet/core
+```
+
+2. Open Python (3.8+ is fine, no heavy external dependencies):
+
+```
+python3
+```
+
+3. Generate your fr0g ID + secret key:
 
 ```python
->>> import fr0g
->>> fr0g_ID, fr0g_secret = fr0g.random_keypair(enabled=True)
->>> print(fr0g_ID)
-# fr0gvlelionz5su2ukloaoeyxvetgygkceeu2v3ozqaid6ipslg4emyfihcg
->>> fr0g.upload(b"<h1>Hello Fr0gNet</h1>", fr0g_secret, index=0) 
+import fr0g
+
+fr0g_ID, fr0g_secret = fr0g.random_keypair(enabled=True)
+print("Your fr0g ID:", fr0g_ID)
+print("Your secret key (save it!):", fr0g_secret)
 ```
-That's all.
 
-Use *fr0g.get_content(fr0g_ID)* to get the content back.
+- fr0g_ID → share this with anyone
+- fr0g_secret → keep it secret, it's your "password" to edit
 
-Re-upload to index=0 to edit (or remove) the content: *fr0g.upload(b"Heeeelllo",fr0g_secret,index=0)*
+### How to publish content (upload)
 
-`b''` deletes the content.
+Classic example — upload a simple HTML page as default (index=0):
 
-### Maximum file size
+```python
+import fr0g
 
-Using fr0g normally, the maximum sum of file size per-iD should not exceed 60KB.
-you may receive errors during upload if you are close to this limit.
+# (use the fr0g_secret you generated earlier)
 
-## Browse the Fr0gNet with *fr0g leaps*
+html = b"""
+<!DOCTYPE html>
+<html>
+<head><title>My first fr0g</title></head>
+<body>
+<h1>Hello from Fr0gNet!</h1>
+<p>This is immutable and on-chain.</p>
+</body>
+</html>
+"""
 
-*Leaps* are like "magic doors" embedded in HTML links or buttons in your browser. They give you direct access to the Fr0gNet.
+fr0g.upload(html, fr0g_secret, index=0)
+print("Published! Now anyone with the ID can see it.")
+```
 
-The HTML file does **not** need to be hosted on localhost — it works perfectly fine even from a local file (`file:///`).
+- index=0 → default content (like index.html)
+- You can upload multiple files with different indexes (1, 2, 3…) → e.g. images, json, css
+- To delete a file: fr0g.upload(b'', fr0g_secret, index=0)
+- To edit: simply upload new content to the same index
+- Limit: total ≤ 60 KB per fr0g ID (sum of all indexes)
 
-Here is the HTML code that creates a clickable link to access the Fr0gNet.
+### How to view / resolve a fr0g ID
 
-It shows the content in a new tab (just replace the `fr0g-ID` value with your own):
+Easiest method (no software installation needed)  
+Go to: [https://Fr0gNet.github.io/browser.html  ](https://fr0gnet.github.io/Fr0gNet/frontend/browser)
+Paste your fr0g ID into the field and press Go / Enter.
+
+From Python (for testing or scripting):
+
+```python
+content = fr0g.get_content(fr0g_ID)
+print(content) # bytes
+print(content.decode('utf-8')) # if it's text/HTML
+```
+
+Via "fr0g leap" (magic embedded links in HTML)  
+You can create links that open fr0g content directly even from normal pages or local files:
 
 ```html
 <a href="javascript:void(0)"
-   fr0g-ID="fr0g2fi7jofxqjfayl7o7pkanes7xjsgijylbbud4atm6v2vp2mq4mjapnbg"
-   onclick="let id=this.getAttribute('fr0g-ID');let stellar=id.substring(4).split('').reverse().join('').toUpperCase();console.log('Stellar addr:', stellar);fetch('https://horizon-testnet.stellar.org/accounts/'+stellar).then(r=>{if(!r.ok)throw new Error('Account not found: '+r.status);return r.json()}).then(d=>{console.log('Data keys:', Object.keys(d.data));if(!d.data || Object.keys(d.data).length===0)throw new Error('No data found for this fr0g ID – make sure it is enabled and content has been uploaded');let chunks=[],len=0;Object.entries(d.data).forEach(([k,v])=>{if(k.startsWith('fr0g:f0c')){let parts=k.match(/fr0g:f0c(\d+):(\d+)/);console.log('Key:', k, 'match:', parts);if(parts){let cn=parseInt(parts[1]);chunks[cn-1]=atob(v);len=len||parseInt(parts[2]);}}});let content=chunks.join('').slice(0,len).replace(/\xff+$/,'');console.log('Chunks length:', chunks.length, 'Len:', len, 'Content:', content);if(!len || content.length === 0)throw new Error('No content chunks found for this fr0g ID at index 0 – verify upload with set_as_index=True');let w=window.open('about:blank');w.document.open();w.document.write(content);w.document.close();}).catch(e=>{console.error('Error loading fr0g:',e);alert('Failed to load content: ' + e.message);});return false;">
-
-Enter the Fr0gNet!
-
+fr0g-ID="fr0g2fi7jofxqjfayl7o7pkanes7xjsgijylbbud4atm6v2vp2mq4mjapnbg"
+onclick="/* code generated by the Fr0gnNet Browser */">
+Enter my fr0g!
 </a>
 ```
 
+The Fr0gNet Browser (https://fr0gnet.github.io/Fr0gNet/frontend/browser)
 
-## Browse the Fr0gNet with Fr0gNet Browser
+generates the onclick code (Leap) for you when you browse an ID.
 
-[https://fr0gnet.github.io/Fr0gNet/frontend/browser/](https://fr0gnet.github.io/Fr0gNet/frontend/browser/)
+### Quick summary – typical workflow
 
+1. fr0g_ID, secret = fr0g.random_keypair(enabled=True)
+2. Write your HTML / JSON / data
+3. fr0g.upload(your_content, secret, index=0)
+4. Share only the ID
+5. Anyone opens it via https://Fr0gNet.github.io/browser.html or compatible clients
+6. You can always edit using the secret
 
-## Architecture
-**fr0g is essentially an application-layer protocol built on Stellar.**
-Stellar is used as the underlying consensus, transaction, and data-availability layer, while fr0g defines higher-level primitives for permanent, censorship-resistant contents
+Fr0gNet is designed to be extremely simple (single Python file), permissionless and server-free.  
+If you want static sites, rebel landing pages, manifestos, immutable pastebins or mini on-chain JSON APIs → this is exactly what it's for.
+
 ### Layered Architecture
 ```
 ┌─────────────────────────────────────────────┐
