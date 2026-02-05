@@ -1,5 +1,6 @@
 # Fr0gNet
 
+**[Fr0gNet Browser](https://fr0gnet.github.io/Fr0gNet/frontend/browser)**
 
 ### Fr0g
 
@@ -81,7 +82,7 @@ Enter the Fr0gNet!
 
 ## Browse the Fr0gNet with Fr0gNet Browser
 
-[https://Fr0gNet.github.io/browser.html](Fr0gNet.github.io/frontend/browser.html)
+[https://fr0gnet.github.io/Fr0gNet/frontend/browser/](https://fr0gnet.github.io/Fr0gNet/frontend/browser/)
 
 
 ## Architecture
