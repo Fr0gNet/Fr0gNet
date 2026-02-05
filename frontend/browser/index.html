@@ -6,25 +6,21 @@
   <title>Fr0gNet Browser</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0a0e17;
-      --green: #00d084;
-      --cyan: #00d4ff;
-      --purple: #7c3aed;
-      --text: #e0f2fe;
-      --text-dim: #94a3b8;
-      --border: #1e293b;
+      --bg: #0a0a0a;
+      --accent: #00ffaa;
+      --text: #e0e0e0;
+      --text-dim: #808080;
+      --border: #1a1a1a;
+      --glow: rgba(0, 255, 170, 0.2);
     }
-
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       background: var(--bg);
       color: var(--text);
@@ -32,196 +28,263 @@
       height: 100vh;
       overflow: hidden;
     }
-
     .browser-frame {
       height: 100vh;
       display: flex;
       flex-direction: column;
-      border: 1px solid var(--border);
-      background: #0f172a;
+      background: var(--bg);
     }
-
     .title-bar {
-      background: #0f172a;
+      background: var(--bg);
       border-bottom: 1px solid var(--border);
-      padding: 10px 16px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
-      gap: 16px;
-    }
-
-    .traffic-lights {
-      display: flex;
       gap: 8px;
     }
-
-    .btn {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      border: 1px solid #444;
-    }
-    .red    { background: #ff5f56; }
-    .yellow { background: #ffbd2e; }
-    .green  { background: #28c940; }
-
-    .url-bar {
+    .url-input {
       flex: 1;
-      background: #1e293b;
+      background: var(--border);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 8px 14px;
-      color: var(--green);
-      font-size: 1.05rem;
+      border-radius: 4px;
+      padding: 6px 10px;
+      color: var(--accent);
+      font-size: 0.95rem;
       font-family: 'Roboto Mono', monospace;
     }
-
+    .url-input:focus {
+      outline: none;
+      box-shadow: 0 0 4px var(--glow);
+    }
+    .load-btn, .leap-btn {
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Roboto Mono', monospace;
+      font-size: 0.95rem;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+    .load-btn:hover, .leap-btn:hover {
+      background: rgba(0, 255, 170, 0.1);
+    }
     .main-area {
       flex: 1;
       display: flex;
       overflow: hidden;
+      position: relative;
     }
-
-    .sidebar {
-      width: 260px;
-      background: #0f172a;
-      border-right: 1px solid var(--border);
-      padding: 20px 16px;
-      font-size: 0.95rem;
-      overflow-y: auto;
-    }
-
-    .sidebar h2 {
-      color: var(--green);
-      font-family: 'Orbitron', sans-serif;
-      margin-bottom: 20px;
-      font-size: 1.4rem;
-    }
-
-    .fr0g-id-input {
-      width: 100%;
-      padding: 12px;
-      background: #1e293b;
-      border: 1px solid var(--green);
-      color: var(--text);
-      font-family: 'Roboto Mono', monospace;
-      font-size: 1.1rem;
-      margin: 12px 0 20px;
-    }
-
-    .load-btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--green);
-      border: none;
-      color: #000;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 1.1rem;
-      font-weight: 500;
-      cursor: pointer;
-      border-radius: 6px;
-      transition: all 0.2s;
-    }
-
-    .load-btn:hover {
-      background: #00b070;
-    }
-
-    .status {
-      margin-top: 30px;
-      color: var(--text-dim);
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
     .content-container {
       flex: 1;
-      background: white;          /* fallback neutro – verrà sovrascritto dal contenuto */
+      background: #ffffff;
       overflow: hidden;
       margin: 0;
     }
-
     .content-container iframe {
       width: 100%;
       height: 100%;
       border: none;
       display: block;
     }
-
     .status-bar {
-      height: 28px;
-      background: #0f172a;
+      height: 24px;
+      background: var(--bg);
       border-top: 1px solid var(--border);
-      padding: 0 16px;
-      font-size: 0.85rem;
+      padding: 0 12px;
+      font-size: 0.8rem;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       color: var(--text-dim);
     }
-
     .error {
-      color: #f87171;
-      margin-top: 12px;
-      font-size: 0.9rem;
+      color: #ff4d4d;
+      font-size: 0.8rem;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 4px 8px;
+      background: rgba(10, 10, 10, 0.8);
+      border-radius: 0 0 4px 4px;
+      display: none;
+      z-index: 10;
+    }
+    .error.visible {
+      display: block;
+    }
+
+    /* Leap panel styles */
+    #leap-panel {
+      position: absolute;
+      bottom: 50px;
+      right: 20px;
+      width: 380px;
+      max-height: 60vh;
+      background: rgba(20, 20, 20, 0.92);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      box-shadow: 0 4px 20px rgba(0, 255, 170, 0.15);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    #leap-panel.visible {
+      display: flex;
+    }
+    .leap-header {
+      padding: 10px 14px;
+      background: rgba(0, 255, 170, 0.08);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.95rem;
+    }
+    .leap-close {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    .leap-close:hover {
+      color: #ff4d4d;
+    }
+    .leap-body {
+      padding: 12px;
+      flex: 1;
+      overflow: auto;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    #leap-code {
+      background: #0f0f0f;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--accent);
+      user-select: text;
+    }
+    .copy-btn {
+      margin-top: 10px;
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Roboto Mono', monospace;
+    }
+    .copy-btn:hover {
+      background: rgba(0, 255, 170, 0.12);
+    }
+    .copy-msg {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #00cc88;
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .copy-msg.show {
+      opacity: 1;
     }
   </style>
 </head>
 <body>
-
 <div class="browser-frame">
-
   <div class="title-bar">
-    <div class="traffic-lights">
-      <div class="btn red"></div>
-      <div class="btn yellow"></div>
-      <div class="btn green"></div>
-    </div>
-    <div class="url-bar">fr0gnet://[fr0g-id]</div>
+    <input 
+  type="text" 
+  id="fr0g-id" 
+  class="url-input" 
+  placeholder="Enter fr0g-ID (e.g. fr0g2fi7jofxqjfayl7o7pkanes7xjsg...)"
+  autofocus
+>
+    <button class="load-btn" onclick="loadFr0gContent()">Load</button>
+    <button class="leap-btn" onclick="generateLeap()">Generate Leap</button>
   </div>
-
   <div class="main-area">
-
-    <div class="sidebar">
-      <h2>Fr0gNet</h2>
-      
-      <input type="text" id="fr0g-id" class="fr0g-id-input" placeholder="Enter fr0g-id" value="fr0g2fi7jofxqjfayl7o7pkanes7xjsgijylbbud4atm6v2vp2mq4mjapnbg">
-      
-      <button class="load-btn" onclick="loadFr0gContent()">Load Content</button>
-
-      <div class="status">
-        Network: Stellar Testnet<br>
-        Endpoint: horizon-testnet.stellar.org<br>
-        Status: Connected
-      </div>
-
-      <div id="error-msg" class="error"></div>
-    </div>
-
     <div class="content-container">
       <iframe id="fr0g-content" src="about:blank" sandbox="allow-scripts allow-same-origin"></iframe>
     </div>
+    <div id="error-msg" class="error"></div>
 
+    <!-- Leap sharing panel -->
+    <div id="leap-panel">
+      <div class="leap-header">
+        <span>Leap (magic-door) code</span>
+        <button class="leap-close" onclick="closeLeapPanel()">×</button>
+      </div>
+      <div class="leap-body">
+        <div id="leap-code"></div>
+        <button class="copy-btn" onclick="copyLeapCode()">Copy to clipboard</button>
+        <div id="copy-msg" class="copy-msg">Copied!</div>
+      </div>
+    </div>
   </div>
-
   <div class="status-bar">
-    <div>Fr0gNet Browser • Test Mode</div>
-    <div>Powered by Stellar Network</div>
+    Test Mode • Leap ready for sharing
   </div>
-
 </div>
 
 <script>
+const leapTemplate = `<a href="javascript:void(0)"
+   fr0g-ID="FR0G_ID_PLACEHOLDER"
+   onclick="let id=this.getAttribute('fr0g-ID');let stellar=id.substring(4).split('').reverse().join('').toUpperCase();console.log('Stellar addr:', stellar);fetch('https://horizon-testnet.stellar.org/accounts/'+stellar).then(r=>{if(!r.ok)throw new Error('Account not found: '+r.status);return r.json()}).then(d=>{console.log('Data keys:', Object.keys(d.data));if(!d.data || Object.keys(d.data).length===0)throw new Error('No data found for this fr0g ID – make sure it is enabled and content has been uploaded');let chunks=[],len=0;Object.entries(d.data).forEach(([k,v])=>{if(k.startsWith('fr0g:f0c')){let parts=k.match(/fr0g:f0c(\\\\d+):(\\\\d+)/);console.log('Key:', k, 'match:', parts);if(parts){let cn=parseInt(parts[1]);chunks[cn-1]=atob(v);len=len||parseInt(parts[2]);}}});let content=chunks.join('').slice(0,len).replace(/\\\\xff+$/,'');console.log('Chunks length:', chunks.length, 'Len:', len, 'Content:', content);if(!len || content.length === 0)throw new Error('No content chunks found for this fr0g ID at index 0 – verify upload with set_as_index=True');let w=window.open('about:blank');w.document.open();w.document.write(content);w.document.close();}).catch(e=>{console.error('Error loading fr0g:',e);alert('Failed to load content: ' + e.message);});return false;">
+Enter my Fr0gNet!
+</a>`;
+
+// Generate Leap magic-door code
+function generateLeap() {
+  const idInput = document.getElementById('fr0g-id');
+  const fr0gId = idInput.value.trim();
+  const panel = document.getElementById('leap-panel');
+  const codeEl = document.getElementById('leap-code');
+
+  if (!fr0gId || !fr0gId.startsWith('fr0g')) {
+    alert('Please enter a valid fr0g-ID (must start with "fr0g")');
+    return;
+  }
+
+  const leapHtml = leapTemplate.replace('FR0G_ID_PLACEHOLDER', fr0gId);
+  codeEl.textContent = leapHtml;
+  panel.classList.add('visible');
+}
+
+function closeLeapPanel() {
+  document.getElementById('leap-panel').classList.remove('visible');
+}
+
+function copyLeapCode() {
+  const codeEl = document.getElementById('leap-code');
+  const msg = document.getElementById('copy-msg');
+  
+  navigator.clipboard.writeText(codeEl.textContent).then(() => {
+    msg.classList.add('show');
+    setTimeout(() => msg.classList.remove('show'), 1800);
+  }).catch(err => {
+    console.error('Clipboard copy failed:', err);
+    alert('Could not copy automatically – please select the code manually');
+  });
+}
+
+// Load fr0g content from Stellar testnet
 async function loadFr0gContent() {
   const idInput = document.getElementById('fr0g-id');
   const errorDiv = document.getElementById('error-msg');
   const iframe = document.getElementById('fr0g-content');
-  
+ 
   const fr0gId = idInput.value.trim();
   errorDiv.textContent = '';
-
   if (!fr0gId || !fr0gId.startsWith('fr0g')) {
     errorDiv.textContent = 'Invalid ID (must start with "fr0g")';
+    errorDiv.classList.add('visible');
+    setTimeout(() => errorDiv.classList.remove('visible'), 4000);
     return;
   }
 
@@ -230,6 +293,7 @@ async function loadFr0gContent() {
     stellarAddr = fr0gId.substring(4).split('').reverse().join('').toUpperCase();
   } catch (e) {
     errorDiv.textContent = 'Error generating Stellar address';
+    errorDiv.classList.add('visible');
     return;
   }
 
@@ -246,7 +310,6 @@ async function loadFr0gContent() {
 
     let chunks = [];
     let totalLen = 0;
-
     Object.entries(data.data).forEach(([key, value]) => {
       if (key.startsWith('fr0g:f0c')) {
         const match = key.match(/fr0g:f0c(\d+):(\d+)/);
@@ -264,18 +327,16 @@ async function loadFr0gContent() {
     }
 
     let content = chunks.join('').slice(0, totalLen).replace(/\xff+$/, '');
-
-    // Write exactly the fetched HTML – no extra wrapper
     const doc = iframe.contentDocument || iframe.contentWindow.document;
     doc.open();
     doc.write(content);
     doc.close();
-
   } catch (err) {
     errorDiv.textContent = 'Error: ' + err.message;
+    errorDiv.classList.add('visible');
+    setTimeout(() => errorDiv.classList.remove('visible'), 5000);
   }
 }
 </script>
-
 </body>
 </html>
